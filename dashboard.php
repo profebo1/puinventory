@@ -33,10 +33,13 @@ head($pagname);
             <section class="content">
                 <div class="row">
                     <div class="col">
-                        <div class="card">
-                            <h3>Card Title</h3>
-                            <p>Some content goes here.</p>
-                        </div>
+                        <a href="#" class="d-flex flex-column align-items-center justify-content-center text-center">
+                            <i class="fa fa-shopping-basket mb-2"></i>
+                            <ul class="list-unstyled">
+                                <li>350</li>
+                                <li>Store Items</li>
+                            </ul>
+                        </a>
                     </div>
                     <div class="col">
                         <div class="card">

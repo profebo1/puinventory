@@ -11,7 +11,7 @@ head($pagname);
     <div class="dashboard-container">
         <?= sidebar() ?>
         <main class="main-content">
-            <?= getheader() ?>
+            <?= getheader("") ?>
             <section class="content">
                 <!-- Content will be dynamically injected here -->
             </section>

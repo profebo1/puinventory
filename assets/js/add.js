@@ -5,7 +5,8 @@ $("#addItemForm").on("submit", function (event) {
 	const formData = $(this).serialize();
 
 	$.ajax({
-		url: 'process/add-new-item.php?curuser="ADMIN"',
+		url:
+			"process/add-new-item.php?curuser=" + `<?php echo $_SESSION['uname'] ?>`,
 		type: "POST",
 		data: formData,
 		dataType: "json",
@@ -17,6 +18,7 @@ $("#addItemForm").on("submit", function (event) {
 					text: response.success,
 				});
 				loadStocks();
+				location.reload();
 			} else {
 				Swal.fire({
 					icon: "error",

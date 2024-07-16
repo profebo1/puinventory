@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param('sss', $itemCode, $itemName, $itemDesc);
             if ($stmt->execute()) {
                 $stmt->close();
-                $sql = "INSERT INTO stock_levels (itemid) VALUES (?)";
+                $sql = "INSERT INTO stock_entries (itemid) VALUES (?)";
                 if ($stmt_levels = $mysqli->prepare($sql)) {
                     $stmt_levels->bind_param('s', $itemCode);
                     if ($stmt_levels->execute()) {
@@ -34,5 +34,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['error' => 'Invalid request method']);
 }
-
 $mysqli->close();
+echo '<script>window.location.href = window.location.href;</script>';
