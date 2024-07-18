@@ -36,60 +36,68 @@ head($pagname);
                         $result = $mysqli->query($sql);
                         if ($result->num_rows > 0) {
                         ?>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Item Code</th>
-                                        <th scope="col">Item Name</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Current Stock</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Item Code</th>
+                                    <th scope="col">Item Name</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Current Stock</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 <?php }
 
                             while ($row = $result->fetch_array()) {
                                 ?>
-                                    <?php
+                                <?php
                                     $itemid = $row["itemid"];
                                     $itemName = $row["itemName"];
                                     $currentStock = currentStockLevel($itemid);
                                     $statusColor = getStatusColor($currentStock);
                                     ?>
-                                    <tr>
-                                        <td><?= $itemid  ?></td>
-                                        <td><?= $itemName ?></td>
-                                        <td><?= $row["itemDesc"] ?></td>
-                                        <td><?= $currentStock ?></td>
-                                        <td style="background-color: <?= $statusColor ?>">
-                                            <!-- <span style="width:50px; height: 50px; background-color: <?= $statusColor ?>"></span> -->
-                                        </td>
-                                        <td>
+                                <tr>
+                                    <td><?= $itemid  ?></td>
+                                    <td><?= $itemName ?></td>
+                                    <td><?= $row["itemDesc"] ?></td>
+                                    <td><?= $currentStock ?></td>
+                                    <td style="background-color: <?= $statusColor ?>">
+                                        <!-- <span style="width:50px; height: 50px; background-color: <?= $statusColor ?>"></span> -->
+                                    </td>
+                                    <td>
 
-                                            <!-- <a class="nav-link add-to-item" href="#" style="color: green"
+                                        <!-- <a class="nav-link add-to-item" href="#" style="color: green"
                                             onclick="showAddToItemModal('<?= htmlspecialchars($row['itemid']) ?>', '<?php echo htmlspecialchars($row['itemName']) ?>', '<?= htmlspecialchars(currentStockLevel($row['itemid'])) ?>')">
                                             <i class="fa fa-plus-square" aria-hidden="true"></i> Add To Quantity
                                         </a> -->
-                                            <a class="nav-link add-to-item" href="#" style="color: green" onclick="showAddToItemModal('<?= htmlspecialchars($row['itemid']) ?>', '<?= htmlspecialchars($row['itemName']) ?>', '<?= htmlspecialchars($currentStock) ?>')">
-                                                <i class="fa fa-plus-square" aria-hidden="true"></i> Add-up
-                                            </a>
+                                        <a class="nav-link add-to-item" href="#" style="color: green"
+                                            onclick="showAddToItemModal('<?= htmlspecialchars($row['itemid']) ?>', '<?= htmlspecialchars($row['itemName']) ?>', '<?= htmlspecialchars($currentStock) ?>')">
+                                            <i class="fa fa-plus-square" aria-hidden="true"></i> Add-up
+                                        </a>
 
-                                        </td>
-                                        <td><a href="#"><i class="fa fa-eye" aria-hidden="true"></i> Track</a></td>
-                                        <td><a href="#"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit
-                                            </a></td>
-                                        <td><a href="#" style="color: red"><i class="fa fa-trash" aria-hidden="true"></i>
-                                                Delete</a></td>
-                                    </tr>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="track-item"
+                                            data-itemid="<?= htmlspecialchars($row['itemid']) ?>"
+                                            data-itemname="<?= htmlspecialchars($row['itemName']) ?>">
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Track
+                                        </a>
+                                    </td>
+
+                                    <td><a href="#"><i class="fa fa-pencil-square" aria-hidden="true"></i> Edit
+                                        </a></td>
+                                    <td><a href="#" style="color: red"><i class="fa fa-trash" aria-hidden="true"></i>
+                                            Delete</a></td>
+                                </tr>
                                 <?php } ?>
 
-                                </tbody>
-                            </table>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>

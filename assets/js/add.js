@@ -1,116 +1,161 @@
-document.addEventListener("DOMContentLoaded", function () {});
-// ADD NEW STOCKS
-$("#addItemForm").on("submit", function (event) {
-	event.preventDefault();
-	const formData = $(this).serialize();
-
-	$.ajax({
-		url:
-			"process/add-new-item.php?curuser=" + `<?php echo $_SESSION['uname'] ?>`,
-		type: "POST",
-		data: formData,
-		dataType: "json",
-		success: function (response) {
-			if (response.success) {
-				Swal.fire({
-					icon: "success",
-					title: "Success",
-					text: response.success,
-				});
-				loadStocks();
-				location.reload();
-			} else {
-				Swal.fire({
-					icon: "error",
-					title: "Error",
-					text: response.error,
-				});
-			}
-			$("#addNewModal").modal("hide");
-		},
-		error: function () {
-			Swal.fire({
-				icon: "error",
-				title: "Error",
-				text: "An error occurred while adding the item.",
-			});
-		},
-	});
-});
-
-$("#addSupplierForm").on("submit", function (event) {
-	event.preventDefault();
-	const formData = $(this).serialize();
-
-	$.ajax({
-		url: "process/add-new-item.php",
-		type: "POST",
-		data: formData,
-		dataType: "json",
-		success: function (response) {
-			if (response.success) {
-				Swal.fire({
-					icon: "success",
-					title: "Success",
-					text: response.success,
-				});
-				loadStocks();
-			} else {
-				Swal.fire({
-					icon: "error",
-					title: "Error",
-					text: response.error,
-				});
-			}
-			$("#addNewModal").modal("hide");
-		},
-		error: function () {
-			Swal.fire({
-				icon: "error",
-				title: "Error",
-				text: "An error occurred while adding the item.",
-			});
-		},
-	});
-});
-
-// Add event listeners to the add-to-item buttons
-// const addToItemButtons = document.querySelectorAll(".add-to-item");
-// addToItemButtons.forEach((button) => {
-// 	button.addEventListener("click", function () {
-// 		const itemId = this.getAttribute("data-itemid");
-// 		const itemName = this.getAttribute("data-itemname");
-// 		// const itemDesc = this.getAttribute("data-itemdesc");
-// 		const currentStock = this.getAttribute("data-currentstock");
-
-// 		document.getElementById("itemCode").innerHTML = itemId;
-// 		document.getElementById("itemName").value = itemName;
-// 		// Not using itemDesc as it isn't in the form
-// 		document.getElementById("currentStock").value = currentStock;
-
-// 		// Show the modal programmatically if needed
-// 		$("#addtoitemsModal").modal("show");
-// 	});
-// });
-
 document.addEventListener("DOMContentLoaded", function () {
-	const addToItemButtons = document.querySelectorAll(".add-to-item");
-	addToItemButtons.forEach((button) => {
-		button.addEventListener("click", function () {
-			const itemId = this.getAttribute("data-itemid");
-			const itemName = this.getAttribute("data-itemname");
-			const currentStock = this.getAttribute("data-currentstock");
+	//  fetch_related_items
+	$(".track-item").click(function () {
+		var itemid = $(this).data("itemid");
 
-			document.getElementById("itemCode").value = itemId;
-			document.getElementById("itemName").value = itemName;
-			document.getElementById("currentStock").value = currentStock;
+		$.ajax({
+			url: "process/fetch_related_items.php",
+			method: "POST",
+			data: { itemid: itemid },
+			dataType: "json",
+			success: function (response) {
+				if (response.error) {
+					alert(response.error);
+				} else {
+					var tableBody = $("#trackItemsTableBody");
+					tableBody.empty();
 
-			// Show the modal programmatically if needed
-			$("#addtoitemsModal").modal("show");
+					response.forEach(function (item) {
+						var row =
+							"<tr>" +
+							"<td>" +
+							item.item_id +
+							"</td>" +
+							"<td>" +
+							item.batch_id +
+							"</td>" +
+							"<td>" +
+							item.cost +
+							"</td>" +
+							"<td>" +
+							item.entryDate +
+							"</td>" +
+							"</tr>";
+						tableBody.append(row);
+					});
+
+					$("#trackItemsModal").modal("show");
+				}
+			},
+
+			error: function (xhr, status, error) {
+				console.error(xhr.responseText); // Log the detailed error message
+				Swal.fire({
+					title: "Error Updating Stock Levels",
+					text: "An unexpected error occurred. Please try again later.",
+					icon: "error",
+					confirmButtonText: "OK",
+				});
+			},
 		});
 	});
-});
 
+	// ADD NEW STOCKS
+	$("#addItemForm").on("submit", function (event) {
+		event.preventDefault();
+		const formData = $(this).serialize();
+
+		$.ajax({
+			url: "process/add-new-item.php?curuser=Admin",
+			type: "POST",
+			data: formData,
+			dataType: "json",
+			success: function (response) {
+				if (response.success) {
+					Swal.fire({
+						icon: "success",
+						title: "Success",
+						text: response.success,
+					}).then(() => {
+						location.reload();
+					});
+					$("#addNewModal").modal("hide");
+					// loadStocks();
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Error",
+						text: response.error,
+					});
+					// loadStocks();
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error response:", xhr.responseText);
+				let errorMessage = "An error occurred while adding the item.";
+				try {
+					const jsonResponse = JSON.parse(xhr.responseText);
+					if (jsonResponse.error) {
+						errorMessage = jsonResponse.error;
+					}
+				} catch (e) {
+					errorMessage += ` ${error}`;
+				}
+				Swal.fire({
+					icon: "error",
+					title: "Error",
+					text: errorMessage,
+				});
+			},
+		});
+	});
+
+	$("#addSupplierForm").on("submit", function (event) {
+		event.preventDefault();
+		const formData = $(this).serialize();
+
+		$.ajax({
+			url: "process/add-new-item.php",
+			type: "POST",
+			data: formData,
+			dataType: "json",
+			success: function (response) {
+				if (response.success) {
+					Swal.fire({
+						icon: "success",
+						title: "Success",
+						text: response.success,
+					});
+					loadStocks();
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Error",
+						text: response.error,
+					});
+				}
+				$("#addNewModal").modal("hide");
+			},
+			error: function () {
+				Swal.fire({
+					icon: "error",
+					title: "Error",
+					// text: "An error occurred while adding the item.",
+					text: response.error,
+				});
+			},
+		});
+
+		// Add event listeners to the add-to-item buttons
+		const addToItemButtons = document.querySelectorAll(".add-to-item");
+		addToItemButtons.forEach((button) => {
+			button.addEventListener("click", function () {
+				const itemId = this.getAttribute("data-itemid");
+				const itemName = this.getAttribute("data-itemname");
+				const currentStock = this.getAttribute("data-currentstock");
+
+				document.getElementById("itemCode").value = itemId;
+				document.getElementById("itemName").value = itemName;
+				document.getElementById("currentStock").value = currentStock;
+
+				// Show the modal programmatically if needed
+				$("#addtoitemsModal").modal("show");
+			});
+		});
+	});
+	// Call the function to set initial state
+	handleItemNatureChange();
+});
 function addStockQty(
 	id,
 	applicationDate,
@@ -146,6 +191,7 @@ function addStockQty(
 	// Show the modal
 	$("#approvalModal").modal("show");
 }
+
 function showAddToItemModal(itemId, itemName, currentStock) {
 	document.getElementById("itemCode-addup").value = itemId;
 	document.getElementById("itemName-addup").value = itemName;
@@ -154,36 +200,6 @@ function showAddToItemModal(itemId, itemName, currentStock) {
 	// Show the modal programmatically
 	$("#addtoitemsModal").modal("show");
 }
-
-// function addNewValues() {
-// 	var oldValues = parseInt(
-// 		document.getElementById("currentStock-addup").value,
-// 		10
-// 	);
-// 	var newValues = parseInt(document.getElementById("newStock-addup").value, 10);
-
-// 	if (!isNaN(oldValues) && !isNaN(newValues)) {
-// 		var total = oldValues + newValues;
-// 		document.getElementById("updated-addup").value = total;
-// 	} else {
-// 		document.getElementById("updated-addup").value = "Invalid input";
-// 	}
-// }
-
-// function addNewValues() {
-// 	var oldValues = parseInt(
-// 		document.getElementById("currentStock-addup").value,
-// 		10
-// 	);
-// 	var newValues = parseInt(document.getElementById("newStock-addup").value, 10);
-
-// 	if (!isNaN(oldValues) && !isNaN(newValues)) {
-// 		var total = oldValues + newValues;
-// 		document.getElementById("updated-addup").value = total;
-// 	} else {
-// 		document.getElementById("updated-addup").value = "Invalid input";
-// 	}
-// }
 
 function addNewValues() {
 	var oldValues = parseInt(
@@ -202,11 +218,12 @@ function addNewValues() {
 }
 
 function findUnitCost() {
-	// addNewValues();
 	let actualCost = parseFloat(
 		document.getElementById("ActualCost-addup").value
 	);
-	let units = parseFloat(document.getElementById("Units-addup").value);
+	let units = parseFloat(document.getElementById("updated-addup").value);
+	// let units = parseFloat(document.getElementById("Units-addup").value);
+	// updated - addup;
 	if (units > 0) {
 		let unitCost = actualCost / units;
 		document.getElementById("unitCost").innerText = unitCost.toFixed(2);
@@ -234,64 +251,29 @@ function trigger() {
 	addNewValues();
 	findUnitCost();
 }
-//Enter New Stock level
-// $("#btnAddNewStockQty").click(function () {
-// 	// Prompt the user for confirmation using SweetAlert
-// 	Swal.fire({
-// 		title: "Confirm?",
-// 		text: "Are you sure you want to update quantity of selected stock item?",
-// 		icon: "warning",
-// 		buttons: true,
-// 		dangerMode: true,
-// 	}).then((willUpdate) => {
-// 		if (willUpdate) {
-// 			// If user confirms the update, proceed with the AJAX request
-// 			var formData = $("#addUpToItemsForm").serialize(); // Serialize form data
-// 			// var selStaff = $("#selemail").val(); // Get selected staff email
 
-// 			$.ajax({
-// 				url: "process/update_stock_levels.php",
-// 				method: "POST",
-// 				data: formData,
-// 				success: function (response) {
-// 					Swal.fire({
-// 						title: "Update Successful",
-// 						text: "Selected stock item quantity updated successfully",
-// 						icon: "success",
-// 						buttons: true,
-// 						// dangerMode: true,
-// 					});
-// 					// Reload the current page upon successful update
-// 					location.reload();
-// 				},
-// 				error: function (xhr, status, error) {
-// 					console.error(error);
-// 					// Display error message using SweetAlert
-// 					swal(
-// 						"Error",
-// 						"An error occurred while saving the record. Please try again later.",
-// 						"error"
-// 					);
-// 				},
-// 			});
-// 		} else {
-// 			// If user cancels the update, display a message using SweetAlert
-// 			swal("Process Cancelled", "Data information remains unchanged.", "info");
-// 		}
-// 	});
-// });
+$("#btnAddNewStockQty").click(function (event) {
+	event.preventDefault(); // Prevent the default form submission
+	let ThisitemId = document.getElementById("itemCode-addup").value;
 
-$("#btnAddNewStockQty").click(function () {
 	Swal.fire({
 		title: "Confirm?",
-		text: "Are you sure you want to update the quantity of the selected stock item?",
+		html: `Are you sure you want to update the quantity of the selected stock item?<br /> Below are the entries to be made effected! <br /> `,
 		icon: "warning",
 		showCancelButton: true,
 		confirmButtonText: "Yes, update it!",
 		cancelButtonText: "No, cancel!",
 	}).then((result) => {
 		if (result.isConfirmed) {
-			var formData = $("#addUpToItemsForm").serialize(); // Serialize form data
+			var form = $("#addUpToItemsForm")[0];
+
+			// Check if form is valid
+			if (form.checkValidity() === false) {
+				Swal.fire("Error", "Please fill out all required fields.", "error");
+				return;
+			}
+
+			var formData = $(form).serialize(); // Serialize form data
 
 			$.ajax({
 				url: "process/stockEntry.php",
@@ -313,11 +295,11 @@ $("#btnAddNewStockQty").click(function () {
 					}
 				},
 				error: function (xhr, status, error) {
-					console.error(error);
+					console.error(xhr.responseText); // Log the detailed error message
 					Swal.fire({
 						title: "Error Updating Stock Levels",
-						text: error,
-						icon: "success",
+						text: "An unexpected error occurred. Please try again later.",
+						icon: "error",
 						confirmButtonText: "OK",
 					});
 				},
@@ -343,6 +325,3 @@ function handleItemNatureChange() {
 	}
 	findUnitCost(); // Call this to update the unit cost if needed
 }
-
-// Call the function on page load to set initial state
-document.addEventListener("DOMContentLoaded", handleItemNatureChange);

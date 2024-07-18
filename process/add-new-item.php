@@ -35,4 +35,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode(['error' => 'Invalid request method']);
 }
 $mysqli->close();
-echo '<script>window.location.href = window.location.href;</script>';

@@ -18,16 +18,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $oldQty = (int)$_POST['currentStock-addup'];
         $units = (int)$_POST['units-addup'];
         $newQty = $newStock * $units;
-        $newTotal = $newQty  + $oldQty;
+        $newTotal = $newQty + $oldQty;
         $enteredBy = $_SESSION['uname'];
         $cost = (float)$_POST['cost-addup'];
         $unitCost = $cost / $newQty;
         $mysqli->begin_transaction();
         $batchRand = "BCHN-" . rand(100000000, 999999999);
 
-        // echo '<script>alert(' . $_SESSION['uname'] . ')</script>';
+        // Use PHP to output JavaScript code for Swal.fire
+        // echo "<script>
+        // Swal.fire({
+        //     title: 'Entry Parameters?',
+        //     html: '{" . $itemid . "}',
+        //     icon: 'info',
+        //     showCancelButton: true,
+        //     confirmButtonText: 'OK',
+        // });
+        // </script>";
+
         try {
-            // Insert into stock_levels table
+            // Insert into stock_entries table
             $sql = "INSERT INTO stock_entries (itemid, batch_id, new_qty, old_qty, total_qty, entered_by) VALUES (?, ?, ?, ?, ?, ?)";
             if ($stmt = $mysqli->prepare($sql)) {
                 $stmt->bind_param('ssiiis', $itemid, $batchRand, $newQty, $oldQty, $newTotal, $enteredBy);
@@ -41,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Insert each batch with unique ID
             for ($i = 1; $i <= $newQty; $i++) {
-                $batchID = $batchRand . '-' . +$i;
+                $batchID = $batchRand . '-' . $i;
                 $sqlBatch = "INSERT INTO stock_batches (batch_id, item_id, cost) VALUES (?, ?, ?)";
                 if ($stmtBatch = $mysqli->prepare($sqlBatch)) {
                     $stmtBatch->bind_param('ssd', $batchID, $itemid, $unitCost);
@@ -61,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Rollback transaction on error
             $mysqli->rollback();
             echo json_encode(['error' => $e->getMessage()]);
-            echo "<script>console.log(" . $e->getMessage() . ")</script>";
+            echo "<script>console.log('" . $e->getMessage() . "');</script>";
         }
     } else {
         echo json_encode(['error' => 'itemCode parameter is missing']);
