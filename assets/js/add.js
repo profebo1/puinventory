@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		const formData = $(this).serialize();
 
 		$.ajax({
-			url: "process/add-new-item.php",
+			url: "process/addNewSuppliers.php",
 			type: "POST",
 			data: formData,
 			dataType: "json",
@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
 						title: "Success",
 						text: response.success,
 					});
-					loadStocks();
+					// loadStocks();
 				} else {
 					Swal.fire({
 						icon: "error",
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
 						text: response.error,
 					});
 				}
-				$("#addNewModal").modal("hide");
+				$("#addSupplierModal").modal("hide");
 			},
 			error: function () {
 				Swal.fire({
@@ -254,11 +254,10 @@ function trigger() {
 
 $("#btnAddNewStockQty").click(function (event) {
 	event.preventDefault(); // Prevent the default form submission
-	let ThisitemId = document.getElementById("itemCode-addup").value;
 
 	Swal.fire({
 		title: "Confirm?",
-		html: `Are you sure you want to update the quantity of the selected stock item?<br /> Below are the entries to be made effected! <br /> `,
+		text: "Are you sure you want to update the quantity of the selected stock item?",
 		icon: "warning",
 		showCancelButton: true,
 		confirmButtonText: "Yes, update it!",

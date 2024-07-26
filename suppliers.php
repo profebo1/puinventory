@@ -50,17 +50,17 @@ head($pagname);
                             </thead>
                             <tbody>
                                 <?php
-                                        while ($row = $result->fetch_array()) {
+                                    while ($row = $result->fetch_array()) {
                                     ?>
                                 <tr>
                                     <td><?= $row["supplierid"] ?></td>
                                     <td><?= $row["suppliername"] ?></td>
                                     <td><?= $row["contactperson"] ?></td>
                                     <td><?= $row["contactnumber"] ?></td>
-                                    <td><?= $row["address"] ?></td>
+                                    <td><?= $row["supaddress"] ?></td>
                                     <td>
                                         <a href="#" class="nav-link" style="color: green"
-                                            onclick="showEditSupplierModal('<?= htmlspecialchars($row['supplierid']) ?>', '<?= htmlspecialchars($row['suppliername']) ?>', '<?= htmlspecialchars($row['contactperson']) ?>', '<?= htmlspecialchars($row['contactnumber']) ?>','<?= htmlspecialchars($row['address']) ?>')">
+                                            onclick="showEditSupplierModal('<?= htmlspecialchars($row['supplierid']) ?>', '<?= htmlspecialchars($row['suppliername']) ?>', '<?= htmlspecialchars($row['contactperson']) ?>', '<?= htmlspecialchars($row['contactnumber']) ?>','<?= htmlspecialchars($row['supaddress']) ?>')">
                                             <i class="fa fa-pencil-square" aria-hidden="true"></i> Edit
                                         </a>
                                     </td>

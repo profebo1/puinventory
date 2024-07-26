@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="col-4">
                                     <label for="">Total Packs/Singles: </label>
-                                    <input type="number" min="1" id="Units-addup" name="units-addup" onchange="trigger();" class="form-control" value="1" required>
+                                    <input type="number" min="1" id="Units-addup" name="Units-addup" onchange="trigger();" class="form-control" value="1" required>
                                 </div>
                                 <div class="col-4">
                                     <label for="updated-addup">Unit Cost: <span id="unitCost"></span></label>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
-                            <textarea class="form-control" id="address" rows="3" name="address" placeholder="Enter address" required></textarea>
+                            <textarea class="form-control" id="supaddress" rows="3" name="supaddress" placeholder="Enter address" required></textarea>
                         </div>
 
                         <div class="form-group">
